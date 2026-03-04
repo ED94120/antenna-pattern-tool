@@ -1,15 +1,101 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Antenna Pattern Tool</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:40px;
+}
+
+input,select,button{
+margin:5px;
+padding:5px;
+}
+
+.result{
+font-weight:bold;
+color:blue;
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-<h1>Antenna Pattern Tool</h1>
+<h2>Antenna Pattern Tool</h2>
 
-<p>Application en construction.</p>
+
+<div>
+
+<label>Antenne :</label>
+
+<select id="antennaSelect"></select>
+
+</div>
+
+
+<div>
+
+<label>Bande :</label>
+
+<select id="bandSelect"></select>
+
+</div>
+
+
+<div>
+
+<label>Azimut (°) :</label>
+
+<input id="azimuthInput">
+
+</div>
+
+
+<div>
+
+<label>Elevation (°) :</label>
+
+<input id="elevationInput">
+
+</div>
+
+
+<div>
+
+<button onclick="calculate()">Calculer</button>
+
+<button onclick="clearAngles()">Effacer angles</button>
+
+<button onclick="clearAll()">Effacer all</button>
+
+</div>
+
+
+<div>
+
+<p>Atténuation Azimut :
+<span class="result" id="azResult"></span>
+<button onclick="copyAz()">Copier</button>
+</p>
+
+<p>Atténuation Elevation :
+<span class="result" id="elResult"></span>
+<button onclick="copyEl()">Copier</button>
+</p>
+
+</div>
+
+
+<script src="js/app.js"></script>
 
 </body>
+
 </html>
