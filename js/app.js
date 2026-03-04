@@ -9,14 +9,25 @@ let antennas = {}; // { name: { bands: { bandLabel: { az:[], el:[] } } } }
 window.onload = init;
 
 async function init() {
-  setStatus("Chargement des antennes…");
-  for (const file of antennaFiles) {
-    const text = await fetch(file).then(r => r.text());
-    parseAntenna(text);
+  try {
+    setStatus("Chargement des antennes…");
+
+    for (const file of antennaFiles) {
+      const r = await fetch(file);
+      if (!r.ok) {
+        setStatus(`ERREUR fetch: ${file} (${r.status})`, true);
+        return;
+      }
+      const text = await r.text();
+      parseAntenna(text);
+    }
+
+    populateAntennaList();
+    bindUI();
+    setStatus("Prêt.");
+  } catch (e) {
+    setStatus(`ERREUR: ${e?.message ?? e}`, true);
   }
-  populateAntennaList();
-  bindUI();
-  setStatus("Prêt.");
 }
 
 function bindUI() {
