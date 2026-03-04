@@ -1,101 +1,123 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Antenna Pattern Tool</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Antenna Pattern Tool</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 28px; }
+    h1 { margin: 0 0 18px; }
 
-<style>
+    .panel {
+      max-width: 820px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+    }
 
-body{
-font-family:Arial;
-margin:40px;
-}
+    .formGrid{
+      display: grid;
+      grid-template-columns: 140px 280px;
+      gap: 10px 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
 
-input,select,button{
-margin:5px;
-padding:5px;
-}
+    label { justify-self: end; }
+    select, input {
+      padding: 8px 10px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
 
-.result{
-font-weight:bold;
-color:blue;
-}
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 18px; }
+    button{
+      padding: 8px 10px;
+      border: 1px solid #999;
+      border-radius: 8px;
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+    button.primary{ border-color:#333; font-weight:600; }
 
-</style>
+    .cards{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
 
+    .card{
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h3{
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .cardGrid{
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px 10px;
+      align-items: center;
+    }
+
+    .resultLine{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .result{
+      font-weight:700;
+      color:#0b57d0;
+      min-width: 92px;
+      display:inline-block;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; color:#333; }
+    .status{ margin-top: 12px; padding: 10px; border-radius: 10px; background:#f3f3f3; }
+    .status.error{ background:#ffecec; border:1px solid #ffb3b3; }
+    .hint{ color:#444; font-size: 13px; margin: 0 0 10px; }
+  </style>
 </head>
 
-
 <body>
+  <h1>Antenna Pattern Tool</h1>
 
-<h2>Antenna Pattern Tool</h2>
+  <div class="panel">
+    <p class="hint">
+      Azimut commun à toutes les bandes (mod 360, sens horaire, 90°=Est).<br>
+      Élévation spécifique à chaque bande (déport par rapport à l’axe) : domaine strict 0..180 ou -179..-1.
+    </p>
 
+    <div class="formGrid">
+      <label for="antennaSelect">Antenne</label>
+      <select id="antennaSelect"></select>
 
-<div>
+      <label for="azimuthInput">Azimut (°)</label>
+      <input id="azimuthInput" inputmode="decimal" placeholder="ex: 33 ou -15,5" />
+    </div>
 
-<label>Antenne :</label>
+    <div class="actions">
+      <button class="primary" id="btnCalc">Calculer</button>
+      <button id="btnClearAngles">Effacer angles</button>
+      <button id="btnClearAll">Effacer all</button>
+    </div>
 
-<select id="antennaSelect"></select>
+    <div class="mono" id="azEcho"></div>
 
-</div>
+    <h2 style="margin:16px 0 10px; font-size:16px;">Bandes (automatiques)</h2>
+    <div class="cards" id="bandCards"></div>
 
+    <div id="status" class="status"></div>
+  </div>
 
-<div>
-
-<label>Bande :</label>
-
-<select id="bandSelect"></select>
-
-</div>
-
-
-<div>
-
-<label>Azimut (°) :</label>
-
-<input id="azimuthInput">
-
-</div>
-
-
-<div>
-
-<label>Elevation (°) :</label>
-
-<input id="elevationInput">
-
-</div>
-
-
-<div>
-
-<button onclick="calculate()">Calculer</button>
-
-<button onclick="clearAngles()">Effacer angles</button>
-
-<button onclick="clearAll()">Effacer all</button>
-
-</div>
-
-
-<div>
-
-<p>Atténuation Azimut :
-<span class="result" id="azResult"></span>
-<button onclick="copyAz()">Copier</button>
-</p>
-
-<p>Atténuation Elevation :
-<span class="result" id="elResult"></span>
-<button onclick="copyEl()">Copier</button>
-</p>
-
-</div>
-
-
-<script src="js/app.js"></script>
-
+  <script src="js/app.js"></script>
 </body>
-
 </html>
