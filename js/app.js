@@ -1,7 +1,7 @@
 const antennaFiles = [
   "data/Huawei_A104518R1V07.txt",
   "data/Huawei_AQU4519R1V06.txt",
-  "data/Huawei_ASI4518R14v06.txt",
+  "data/Huawei_ASI4518R14V06.txt",
   "data/Huawei_AOC4518R30V06.txt",
   "data/Huawei_A06240PA01V06.txt"
 ];
