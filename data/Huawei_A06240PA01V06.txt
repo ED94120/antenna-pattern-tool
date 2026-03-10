@@ -1,4 +1,4 @@
-Huawei_AQU4519R1V06
+Huawei_A06240PA01V06
 690 MHz, 960 MHz
 Azimut
 0,00
@@ -1445,4 +1445,5 @@ Elevation
 -3,10
 -1,26
 -0,23
+
 
