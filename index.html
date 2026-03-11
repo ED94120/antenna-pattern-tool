@@ -5,26 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Antenna Pattern Tool</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 28px; }
-    h1 { margin: 0 0 18px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 28px;
+      background: #fafafa;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+    }
 
     .panel {
-      max-width: 820px;
+      max-width: 980px;
       border: 1px solid #ddd;
       border-radius: 12px;
       padding: 16px;
+      background: #fff;
     }
 
-    .formGrid{
+    .formGrid {
       display: grid;
-      grid-template-columns: 140px 280px;
+      grid-template-columns: 140px minmax(320px, 1fr);
       gap: 10px 12px;
-      align-items: center;
+      align-items: start;
       margin-bottom: 14px;
     }
 
-    label { justify-self: end; }
-    select, input {
+    label {
+      justify-self: end;
+      padding-top: 8px;
+    }
+
+    select,
+    input[type="text"] {
       padding: 8px 10px;
       border: 1px solid #bbb;
       border-radius: 8px;
@@ -33,57 +46,178 @@
       box-sizing: border-box;
     }
 
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0 18px; }
-    button{
+    input.invalid {
+      border-color: #d93025;
+      background: #fff2f2;
+    }
+
+    input.partial-invalid {
+      border-color: #e09a00;
+      background: #fff9eb;
+    }
+
+    .fieldBlock {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .angleEditor {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stepBtns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .stepBtns button {
+      padding: 5px 8px;
+      min-width: 44px;
+      font-size: 13px;
+      border: 1px solid #999;
+      border-radius: 8px;
+      background: #f6f6f6;
+      cursor: pointer;
+    }
+
+    .stepBtns button:hover,
+    .actions button:hover,
+    .copyBtn:hover {
+      background: #ececec;
+    }
+
+    .sliderRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sliderRow input[type="range"] {
+      flex: 1;
+    }
+
+    .sliderValue {
+      min-width: 62px;
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      color: #333;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0 18px;
+    }
+
+    .actions button,
+    .copyBtn {
       padding: 8px 10px;
       border: 1px solid #999;
       border-radius: 8px;
       background: #f5f5f5;
       cursor: pointer;
     }
-    button.primary{ border-color:#333; font-weight:600; }
 
-    .cards{
+    .actions button.primary {
+      border-color: #333;
+      font-weight: 600;
+    }
+
+    .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 12px;
     }
 
-    .card{
+    .card {
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       padding: 12px;
       background: #fff;
     }
 
-    .card h3{
+    .card h3 {
       margin: 0 0 10px;
       font-size: 15px;
     }
 
-    .cardGrid{
+    .cardGrid {
       display: grid;
       grid-template-columns: 110px 1fr;
       gap: 8px 10px;
-      align-items: center;
+      align-items: start;
     }
 
-    .resultLine{
-      display:flex;
-      align-items:center;
+    .resultLine {
+      display: flex;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
-    .result{
-      font-weight:700;
-      color:#0b57d0;
+
+    .result {
+      font-weight: 700;
+      color: #0b57d0;
       min-width: 92px;
-      display:inline-block;
+      display: inline-block;
     }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; color:#333; }
-    .status{ margin-top: 12px; padding: 10px; border-radius: 10px; background:#f3f3f3; }
-    .status.error{ background:#ffecec; border:1px solid #ffb3b3; }
-    .hint{ color:#444; font-size: 13px; margin: 0 0 10px; }
+
+    .result.muted {
+      color: #999;
+      font-weight: 400;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      color: #333;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #f3f3f3;
+    }
+
+    .status.error {
+      background: #ffecec;
+      border: 1px solid #ffb3b3;
+    }
+
+    .hint {
+      color: #444;
+      font-size: 13px;
+      margin: 0 0 10px;
+    }
+
+    .smallHint {
+      color: #666;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .sepTop {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .formGrid,
+      .cardGrid {
+        grid-template-columns: 1fr;
+      }
+
+      label {
+        justify-self: start;
+        padding-top: 0;
+      }
+    }
   </style>
 </head>
 
@@ -98,10 +232,31 @@
 
     <div class="formGrid">
       <label for="antennaSelect">Antenne</label>
-      <select id="antennaSelect"></select>
+      <div class="fieldBlock">
+        <select id="antennaSelect"></select>
+      </div>
 
       <label for="azimuthInput">Azimut (°)</label>
-      <input id="azimuthInput" inputmode="decimal" placeholder="ex: 33 ou -15,5" />
+      <div class="fieldBlock">
+        <div class="angleEditor">
+          <input id="azimuthInput" type="text" inputmode="decimal" placeholder="ex: 33 ou -15,5" />
+
+          <div class="stepBtns">
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="-10">-10</button>
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="-5">-5</button>
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="-1">-1</button>
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="1">+1</button>
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="5">+5</button>
+            <button type="button" class="stepBtn" data-target="azimuthInput" data-step="10">+10</button>
+          </div>
+
+          <div class="sliderRow">
+            <input id="azimuthSlider" type="range" min="0" max="359" step="1" value="0" />
+            <span class="sliderValue" id="azSliderValue">0°</span>
+          </div>
+        </div>
+        <div class="smallHint">Le slider agit sur l’azimut modulo 360.</div>
+      </div>
     </div>
 
     <div class="actions">
@@ -118,6 +273,6 @@
     <div id="status" class="status"></div>
   </div>
 
-  <script src="js/app.js?v=1001"></script>
+  <script src="js/app.js?v=2001"></script>
 </body>
 </html>
