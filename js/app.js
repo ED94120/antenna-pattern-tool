@@ -4,7 +4,8 @@ const antennaFiles = [
   "data/Huawei_ASI4518R14V06.txt",
   "data/Huawei_AOC4518R30V06.txt",
   "data/Huawei_A06240PA01V06.txt",
-  "data/Nokia_5G_AIRSCALE_AQQE.txt"
+  "data/Nokia_5G_AIRSCALE_AQQE.txt",
+  "data/Ericsson_5G_AIR_6449.txt"
 ];
 
 let antennas = {}; // { name: { bands: { bandLabel: { az:[], el:[] } } } }
