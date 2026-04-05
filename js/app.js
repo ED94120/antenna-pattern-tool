@@ -563,12 +563,20 @@ async function copyText(spanId) {
   const txt = (document.getElementById(spanId).textContent || "").trim();
   if (!txt || txt === "—") return;
 
+  const numMatch = txt.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+  if (!numMatch) {
+    setStatus("Aucune valeur numérique à copier.", true);
+    return;
+  }
+
+  const valueToCopy = numMatch[0];
+
   try {
-    await navigator.clipboard.writeText(txt);
-    setStatus("Copié dans le presse-papier.");
+    await navigator.clipboard.writeText(valueToCopy);
+    setStatus("Valeur numérique copiée dans le presse-papier.");
   } catch {
     const ta = document.createElement("textarea");
-    ta.value = txt;
+    ta.value = valueToCopy;
     ta.style.position = "fixed";
     ta.style.left = "-9999px";
     document.body.appendChild(ta);
@@ -576,7 +584,7 @@ async function copyText(spanId) {
 
     try {
       document.execCommand("copy");
-      setStatus("Copié dans le presse-papier.");
+      setStatus("Valeur numérique copiée dans le presse-papier.");
     } catch {
       setStatus("Copie impossible (navigateur).", true);
     } finally {
