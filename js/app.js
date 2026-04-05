@@ -94,6 +94,9 @@ function parseAntenna(text) {
     const az = [];
     for (let k = 0; k < 360; k++) {
       const v = parseFloat((lines[i++] || "").replace(",", "."));
+      if (!Number.isFinite(v)) {
+        throw new Error(`Valeur Azimut invalide (${antennaName} / ${bandLabel}, index ${k})`);
+      }
       az.push(toAttenuation(v));
     }
 
@@ -105,6 +108,9 @@ function parseAntenna(text) {
     const el = [];
     for (let k = 0; k < 360; k++) {
       const v = parseFloat((lines[i++] || "").replace(",", "."));
+      if (!Number.isFinite(v)) {
+        throw new Error(`Valeur Elevation invalide (${antennaName} / ${bandLabel}, index ${k})`);
+      }
       el.push(toAttenuation(v));
     }
 
@@ -231,7 +237,7 @@ function normAzimuth(a) {
 
 function elevationToIndexFloat(eDeg) {
   if (eDeg >= 0 && eDeg <= 180) return { ok: true, idx: eDeg };
-  if (eDeg <= -1 && eDeg >= -179) return { ok: true, idx: eDeg + 360 };
+  if (eDeg < 0 && eDeg >= -179) return { ok: true, idx: eDeg + 360 };
   return { ok: false, idx: NaN };
 }
 
@@ -374,20 +380,19 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
     notes.push("Élévation non renseignée.");
   } else if (elParsed.state === "partial") {
     notes.push("Élévation en cours de saisie.");
-    invalid = true;
   } else if (elParsed.state === "invalid") {
     notes.push("Élévation invalide.");
     invalid = true;
   } else {
     const eIdx = elevationToIndexFloat(elParsed.val);
     if (!eIdx.ok) {
-      notes.push("Élévation hors domaine (0..180 ou -179..-1).");
+      notes.push("Élévation hors domaine (valeurs admises : -179° à 180°).");
       invalid = true;
     } else {
       const attEl = interpCircular360(pat.el, eIdx.idx);
       elResEl.textContent = `${attEl.toFixed(2)} dB`;
       elResEl.classList.remove("muted");
-      notes.push(`Élévation saisie: ${elParsed.val}° (strict)`);
+      notes.push(`Élévation saisie: ${elParsed.val}° ; index utilisé: ${eIdx.idx.toFixed(3)}`);
       elDone = true;
     }
   }
