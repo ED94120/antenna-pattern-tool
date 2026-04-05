@@ -131,8 +131,35 @@
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
       gap: 12px;
+    }
+    
+    .cardGrid {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 8px 10px;
+      align-items: start;
+    }
+    
+    .cardGrid label {
+      white-space: nowrap;
+    }
+    
+    .resultBlock {
+      display: grid;
+      gap: 8px;
+    }
+    
+    .resultRow {
+      display: grid;
+      grid-template-columns: 190px 100px 90px;
+      align-items: center;
+      column-gap: 10px;
+    }
+    
+    .resultLabel {
+      white-space: nowrap;
     }
 
     .card {
@@ -145,13 +172,6 @@
     .card h3 {
       margin: 0 0 10px;
       font-size: 15px;
-    }
-
-    .cardGrid {
-      display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 8px 10px;
-      align-items: start;
     }
 
     .resultLine {
