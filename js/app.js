@@ -158,7 +158,7 @@ function renderBandCards() {
       <h3>${escapeHtml(bandLabel)}</h3>
 
       <div class="cardGrid">
-        <label for="el_${idx}">Élévation (°)</label>
+        <label for="el_${idx}">Dpt Élévation (°)</label>
         <div class="fieldBlock">
           <div class="angleEditor">
             <input id="el_${idx}" type="text" inputmode="decimal" placeholder="ex: 0, 5, -10" />
