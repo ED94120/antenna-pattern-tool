@@ -237,7 +237,7 @@ function normAzimuth(a) {
 
 function elevationToIndexFloat(eDeg) {
   if (eDeg >= 0 && eDeg <= 180) return { ok: true, idx: eDeg };
-  if (eDeg < 0 && eDeg >= -179) return { ok: true, idx: eDeg + 360 };
+  if (eDeg < 0 && eDeg >= -180) return { ok: true, idx: eDeg + 360 };
   return { ok: false, idx: NaN };
 }
 
@@ -386,7 +386,7 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   } else {
     const eIdx = elevationToIndexFloat(elParsed.val);
     if (!eIdx.ok) {
-      notes.push("Élévation hors domaine (valeurs admises : -179° à 180°).");
+      notes.push("Élévation hors domaine (valeurs admises : -180° à 180°).");
       invalid = true;
     } else {
       const attEl = interpCircular360(pat.el, eIdx.idx);
@@ -502,7 +502,7 @@ function incrementAngleInput(input, step) {
     return;
   }
 
-  next = clamp(next, -179, 180);
+  next = clamp(next, -180, 180);
   input.value = formatAngleForInput(next);
 }
 
