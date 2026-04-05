@@ -392,7 +392,7 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
       const attEl = interpCircular360(pat.el, eIdx.idx);
       elResEl.textContent = `${attEl.toFixed(2)} dB`;
       elResEl.classList.remove("muted");
-      notes.push(`Élévation saisie: ${elParsed.val}° ; index utilisé: ${eIdx.idx.toFixed(3)}`);
+      notes.push(`Élévation saisie: ${elParsed.val}° ; position table: ${eIdx.idx.toFixed(3)}`);
       elDone = true;
     }
   }
