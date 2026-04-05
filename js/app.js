@@ -158,7 +158,7 @@ function renderBandCards() {
       <h3>${escapeHtml(bandLabel)}</h3>
 
       <div class="cardGrid">
-        <label for="el_${idx}">Dpt Élévation (°)</label>
+        <label for="el_${idx}">Déport élévation (°)</label>
         <div class="fieldBlock">
           <div class="angleEditor">
             <input id="el_${idx}" type="text" inputmode="decimal" placeholder="ex: 0, 5, -10" />
@@ -175,17 +175,23 @@ function renderBandCards() {
         </div>
       </div>
 
-      <div class="sepTop">
-        <div class="resultLine">
-          <span>Atténuation Azimut :</span>
+      <div class="sepTop resultBlock">
+        <div class="resultRow">
+          <span class="resultLabel">Atténuation Azimut :</span>
           <span class="result muted" id="azRes_${idx}">—</span>
           <button class="copyBtn" type="button" onclick="copyText('azRes_${idx}')">Copier</button>
         </div>
 
-        <div class="resultLine" style="margin-top:6px;">
-          <span>Atténuation Élévation :</span>
+        <div class="resultRow">
+          <span class="resultLabel">Atténuation Élévation :</span>
           <span class="result muted" id="elRes_${idx}">—</span>
           <button class="copyBtn" type="button" onclick="copyText('elRes_${idx}')">Copier</button>
+        </div>
+
+        <div class="resultRow">
+          <span class="resultLabel">Somme atténuation :</span>
+          <span class="result muted" id="sumRes_${idx}">—</span>
+          <button class="copyBtn" type="button" onclick="copyText('sumRes_${idx}')">Copier</button>
         </div>
 
         <div class="mono" id="echo_${idx}" style="margin-top:8px;"></div>
@@ -345,6 +351,7 @@ function renderAzimuthEcho(azInfo) {
 function updateBandCard(idx, bandLabel, pat, azInfo) {
   const azResEl = document.getElementById(`azRes_${idx}`);
   const elResEl = document.getElementById(`elRes_${idx}`);
+  const sumResEl = document.getElementById(`sumRes_${idx}`);
   const echoEl = document.getElementById(`echo_${idx}`);
   const elInput = document.getElementById(`el_${idx}`);
 
@@ -354,6 +361,9 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   elResEl.textContent = "—";
   elResEl.classList.add("muted");
 
+  sumResEl.textContent = "—";
+  sumResEl.classList.add("muted");
+
   echoEl.textContent = "";
 
   const elParsed = parseAngle(elInput.value);
@@ -362,11 +372,13 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   let azDone = false;
   let elDone = false;
   let invalid = false;
+  let attAzVal = NaN;
+  let attElVal = NaN;
   const notes = [];
 
   if (azInfo.ok) {
-    const attAz = interpCircular360(pat.az, azInfo.norm);
-    azResEl.textContent = `${attAz.toFixed(2)} dB`;
+    attAzVal = interpCircular360(pat.az, azInfo.norm);
+    azResEl.textContent = `${attAzVal.toFixed(2)} dB`;
     azResEl.classList.remove("muted");
     azDone = true;
   } else if (azInfo.state === "invalid") {
@@ -389,12 +401,18 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
       notes.push("Élévation hors domaine (valeurs admises : -180° à 180°).");
       invalid = true;
     } else {
-      const attEl = interpCircular360(pat.el, eIdx.idx);
-      elResEl.textContent = `${attEl.toFixed(2)} dB`;
+      attElVal = interpCircular360(pat.el, eIdx.idx);
+      elResEl.textContent = `${attElVal.toFixed(2)} dB`;
       elResEl.classList.remove("muted");
       notes.push(`Élévation saisie: ${elParsed.val}° ; position table: ${eIdx.idx.toFixed(3)}`);
       elDone = true;
     }
+  }
+
+  if (azDone && elDone) {
+    const attSum = attAzVal + attElVal;
+    sumResEl.textContent = `${attSum.toFixed(2)} dB`;
+    sumResEl.classList.remove("muted");
   }
 
   echoEl.textContent = notes.join(" ");
@@ -427,7 +445,7 @@ function clearAnglesOnly() {
     inp.classList.remove("invalid", "partial-invalid");
   });
 
-  cards.querySelectorAll("span[id^='azRes_'], span[id^='elRes_']").forEach(sp => {
+  cards.querySelectorAll("span[id^='azRes_'], span[id^='elRes_'], span[id^='sumRes_']").forEach(sp => {
     sp.textContent = "—";
     sp.classList.add("muted");
   });
