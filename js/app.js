@@ -191,7 +191,7 @@ function renderBandCards() {
         <div class="resultRow">
           <span class="resultLabel">Somme atténuation :</span>
           <span class="result muted" id="sumRes_${idx}">—</span>
-          <button class="copyBtn" type="button" onclick="copyText('sumRes_${idx}')">Copier</button>
+          <button class="copyBtn copyBtnSum" type="button" onclick="copyText('sumRes_${idx}')">Copier</button>
         </div>
 
         <div class="mono" id="echo_${idx}" style="margin-top:8px;"></div>
