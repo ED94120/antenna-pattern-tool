@@ -7,7 +7,6 @@ Angle d'ouverture complet à 3 dB en azimut    : Bande BF 64°, Bande MF_HF 68.7
 Angle d'ouverture complet à 3 dB en élévation : Bande BF 13.9°, Bande MF_HF 7.8°.
 Longueur du radôme : 2.695 m
 
-
 [ANTENNA] Huawei_AQU4519R1V06
 Antenne à faisceau fixe.
 Antennes SFR - DIM du 25 mars 2025. Référence de l'antenne : page 14.
@@ -18,6 +17,11 @@ Longueur du radôme : 2.550 m
 
 [ANTENNA] Huawei_ASI4518R14V06
 Antenne à faisceau fixe.
+Antenne Orange - Information du DIM, 88 Boulevard de Dunkerque ilot M1, Marseille.
+Les caractéristiques de l'antenne sont données dans le catalogue Huawei 2017.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 62°, Bande MF 62.8°, Bande HF 69.8°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 14.5°, Bande MF 7.5°, Bande HF 6°.
+Longueur du radôme : 1.499 m
 
 [ANTENNA] Huawei_AOC4518R30V06
 Antenne à faisceau fixe.
@@ -42,7 +46,6 @@ Adresse : 21 avenue des frênes, Montevrain (77144). Parc en agglomération.
 Angle d'ouverture complet à 3 dB en azimut    : Bande BF 69.6°, Bande MF_HF 67.8°.
 Angle d'ouverture complet à 3 dB en élévation : Bande BF 9.71°, Bande MF_HF 6.27°.
 Longueur du radôme : 2.009 m
-
 
 [ANTENNA] Nokia_5G_AIRSCALE_AQQE
 Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
