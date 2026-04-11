@@ -49,6 +49,14 @@ Longueur du radôme : 2.009 m
 
 [ANTENNA] Nokia_5G_AIRSCALE_AQQE
 Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
+Modèle Utilisé par SFR et FREE.
+Intégration possible dans un panneau AIO (all in one) où le haut du panneau est l'antenne 5G 3500 MHz.
+Antennes SFR - DIM du 28 juillet 2025. Référence de l'antenne pages 12 et 14.
+Adresse : 12 rue Raphael Ponson à Marseille.
+Angle d'ouverture complet à 3 dB en azimut    : 90°, à 4 dB : 100°, à 7 dB : 136°
+Balayage vertical limité à + ou - 7° de part est d'autre de l'axe de référence (boresight).
+Pré-tilt éléctrique de 6°.
+Hauteur du radôme (cas sans intégration): 1,001 m, largeur : 0,448 m, épaisseur : 0,113 m
 
 [ANTENNA] Ericsson_5G_AIR_6449
 Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
