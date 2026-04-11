@@ -1,5 +1,12 @@
 [ANTENNA] Huawei_A104518R1V07
 Antenne à faisceau fixe.
+Antennes SFR - DIM du 12 juin 2024.  Référence de l'antenne : page 14.
+Note : l'antenne utilisée dans le DIM est la version V06.
+Adresse :  rue de la Gare 8, Hombourg 68490. Environnement : zone industrielle.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 64°, Bande MF_HF 68.7°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 13.9°, Bande MF_HF 7.8°.
+Longueur du radôme : 2.695 m
+
 
 [ANTENNA] Huawei_AQU4519R1V06
 Antenne à faisceau fixe.
