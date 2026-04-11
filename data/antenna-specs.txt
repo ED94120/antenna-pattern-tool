@@ -37,6 +37,12 @@ Longueur du radôme : 2.009 m
 
 [ANTENNA] Huawei_A06240PA01V06
 Antenne à faisceau fixe.
+Antennes Orange - DIM du 11 décembre 2025. Référence de l'antenne : pages 8 et 9.
+Adresse : 21 avenue des frênes, Montevrain (77144). Parc en agglomération.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 69.6°, Bande MF_HF 67.8°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 9.71°, Bande MF_HF 6.27°.
+Longueur du radôme : 2.009 m
+
 
 [ANTENNA] Nokia_5G_AIRSCALE_AQQE
 Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
