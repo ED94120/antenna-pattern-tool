@@ -9,7 +9,11 @@ const antennaFiles = [
   "data/Ericsson_5G_AIR_6449.txt"
 ];
 
+const antennaSpecsFile = "data/antenna-specs.txt";
+const defaultAntennaInfo = "Pas d'information disponible pour ce modèle d'antenne";
+
 let antennas = {}; // { name: { bands: { bandLabel: { az:[], el:[] } } } }
+let antennaInfos = {}; // { antennaName: "texte libre..." }
 
 window.onload = init;
 
@@ -26,6 +30,8 @@ async function init() {
       const text = await r.text();
       parseAntenna(text);
     }
+
+    await loadAntennaInfos();
 
     populateAntennaList();
     bindUI();
@@ -70,6 +76,74 @@ function setStatus(msg, isErr = false) {
   const el = document.getElementById("status");
   el.textContent = msg || "";
   el.className = isErr ? "status error" : "status";
+}
+
+async function loadAntennaInfos() {
+  antennaInfos = {};
+
+  try {
+    const r = await fetch(antennaSpecsFile);
+
+    if (!r.ok) {
+      return;
+    }
+
+    const text = await r.text();
+    antennaInfos = parseAntennaSpecs(text);
+  } catch {
+    antennaInfos = {};
+  }
+}
+
+function parseAntennaSpecs(text) {
+  const result = {};
+  const lines = text.split(/\r?\n/);
+
+  let currentName = null;
+  let currentBlock = [];
+
+  function saveCurrentBlock() {
+    if (!currentName) return;
+
+    const content = currentBlock.join("\n").trim();
+    result[currentName] = content || defaultAntennaInfo;
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (line.startsWith("[ANTENNA]")) {
+      saveCurrentBlock();
+      currentName = line.substring("[ANTENNA]".length).trim();
+      currentBlock = [];
+      continue;
+    }
+
+    if (currentName) {
+      currentBlock.push(rawLine);
+    }
+  }
+
+  saveCurrentBlock();
+
+  return result;
+}
+
+function updateAntennaInfo() {
+  const select = document.getElementById("antennaSelect");
+  const infoEl = document.getElementById("antennaInfo");
+
+  if (!infoEl) return;
+
+  const antennaName = (select?.value || "").trim();
+
+  if (!antennaName) {
+    infoEl.value = defaultAntennaInfo;
+    return;
+  }
+
+  const info = antennaInfos[antennaName];
+  infoEl.value = (info && info.trim()) ? info.trim() : defaultAntennaInfo;
 }
 
 function parseAntenna(text) {
@@ -138,6 +212,7 @@ function populateAntennaList() {
 
 function onAntennaChanged() {
   clearAnglesOnly();
+  updateAntennaInfo();
   renderBandCards();
   refreshAllResults();
 }
@@ -465,6 +540,7 @@ function clearAngles() {
 function clearAll() {
   clearAnglesOnly();
   document.getElementById("antennaSelect").selectedIndex = 0;
+  updateAntennaInfo();
   renderBandCards();
   refreshAllResults();
   setStatus("Réinitialisé.");
