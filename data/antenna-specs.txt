@@ -1,7 +1,23 @@
 [ANTENNA] Huawei_A104518R1V07
-Modèle utilisé dans le DIM SFR du 20/03/2025, site 96 avenue de la République à Fontenay-sous-Bois.
-Bande BF : angle à 3 dB Horizontal théorique : 62°, mesuré 64°.
+Antenne à faisceau fixe.
+
+[ANTENNA] Huawei_AQU4519R1V06
+Antenne à faisceau fixe.
+
+[ANTENNA] Huawei_ASI4518R14V06
+Antenne à faisceau fixe.
+
+[ANTENNA] Huawei_AOC4518R30V06
+Antenne à faisceau fixe.
+
+[ANTENNA] Huawei_AOC4518R27V06
+Antenne à faisceau fixe.
+
+[ANTENNA] Huawei_A06240PA01V06
+Antenne à faisceau fixe.
+
+[ANTENNA] Nokia_5G_AIRSCALE_AQQE
+Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
 
 [ANTENNA] Ericsson_5G_AIR_6449
-Modèle utilisé sur site pilote.
-Mesures terrain en cours de consolidation.
+Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
