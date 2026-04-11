@@ -3,6 +3,11 @@ Antenne à faisceau fixe.
 
 [ANTENNA] Huawei_AQU4519R1V06
 Antenne à faisceau fixe.
+Antennes SFR - DIM du 25 mars 2025. Référence de l'antenne : page 14.
+Adresse :  Asté, 65200. Environnement : Zone rurale montageuse.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 67°, Bande MF_HF 69°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 9.57°, Bande MF_HF 6.6°.
+Longueur du radôme : 2.550 m
 
 [ANTENNA] Huawei_ASI4518R14V06
 Antenne à faisceau fixe.
@@ -11,16 +16,16 @@ Antenne à faisceau fixe.
 Antenne à faisceau fixe.
 Antennes SFR - DIM du 6 septembre 2024. Référence de l'antenne : pages 19 et 20. 
 Adresse : 213 rue de Belleville à Paris, 75019. Environnement : Agglomération dense.
-Angle d'ouverture à 3 dB en azimut    : Bande BF 7.6°, Bande MF_HF 7.7°.
-Angle d'ouverture à 3 dB en élévation : Bande BF 72°, Bande MF_HF 66°.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 7.6°, Bande MF_HF 7.7°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 72°, Bande MF_HF 66°.
 Longueur du radôme : 2.695 m
 
 [ANTENNA] Huawei_AOC4518R27V06
 Antenne à faisceau fixe.
 Antennes SFR - DIM du 10 juillet 2025. Référence de l'antenne : pages 13 et 15.
 Adresse : 15 rue Bethisy à Noisy-le-Sec. Environnement : Agglomération dense.
-Angle d'ouverture à 3 dB en azimut    : Bande BF 70.8°, Bande MF 69.4°, Bande HF 59°.
-Angle d'ouverture à 3 dB en élévation : Bande BF 11.5°, Bande MF 6.5°, Bande HF 5.9°.
+Angle d'ouverture complet à 3 dB en azimut    : Bande BF 70.8°, Bande MF 69.4°, Bande HF 59°.
+Angle d'ouverture complet à 3 dB en élévation : Bande BF 11.5°, Bande MF 6.5°, Bande HF 5.9°.
 Longueur du radôme : 2.009 m
 
 [ANTENNA] Huawei_A06240PA01V06
