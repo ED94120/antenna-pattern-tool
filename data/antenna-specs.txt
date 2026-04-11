@@ -27,7 +27,7 @@ Longueur du radôme : 1.499 m
 Antenne à faisceau fixe.
 Antennes SFR - DIM du 6 septembre 2024. Référence de l'antenne : pages 19 et 20. 
 Adresse : 213 rue de Belleville à Paris, 75019. Environnement : Agglomération dense.
-Angle d'ouverture complet à 3 dB en azimut : Bande BF 72°, Bande MF_HF 66°.
+Angle d'ouverture complet à 3 dB en azimut       : Bande BF 72°, Bande MF_HF 66°.
 Angle d'ouverture complet à 3 dB en élévation    : Bande BF 7.6°, Bande MF_HF 7.7°.
 Longueur du radôme : 2.695 m
 
@@ -63,4 +63,3 @@ Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
 Modèle Utilisé par Bouygues Telecom et Orange.
 Angle d'ouverture complet à 3 dB en azimut : 100°
 Angle d'ouverture complet à 3 dB en élévation : 23°
-
