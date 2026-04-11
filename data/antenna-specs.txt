@@ -9,6 +9,11 @@ Antenne à faisceau fixe.
 
 [ANTENNA] Huawei_AOC4518R30V06
 Antenne à faisceau fixe.
+Antennes SFR - DIM du 6 septembre 2024. Référence de l'antenne : pages 19 et 20. 
+Adresse : 213 rue de Belleville à Paris, 75019. Environnement : Agglomération dense.
+Angle d'ouverture à 3 dB en azimut    : Bande BF 7.6°, Bande MF_HF : 7.7°
+Angle d'ouverture à 3 dB en élévation : Bande BF 72°, Bande MF_HF : 66°
+Longueur du radôme : 2.695 m
 
 [ANTENNA] Huawei_AOC4518R27V06
 Antenne à faisceau fixe.
