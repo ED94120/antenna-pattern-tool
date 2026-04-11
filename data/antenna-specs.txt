@@ -1,0 +1,7 @@
+[ANTENNA] Huawei_A104518R1V07
+Modèle utilisé dans le DIM SFR du 20/03/2025, site 96 avenue de la République à Fontenay-sous-Bois.
+Bande BF : angle à 3 dB Horizontal théorique : 62°, mesuré 64°.
+
+[ANTENNA] Ericsson_5G_AIR_6449
+Modèle utilisé sur site pilote.
+Mesures terrain en cours de consolidation.
