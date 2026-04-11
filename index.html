@@ -37,11 +37,11 @@
     }
 
     label[for="azimuthInput"] {
-      color: #006400;   /* vert foncé */
+      color: #006400;
     }
     
     label[for^="el_"] {
-      color: #8b4513;   /* marron */
+      color: #8b4513;
     }
     
     select,
@@ -52,6 +52,19 @@
       font-size: 14px;
       width: 100%;
       box-sizing: border-box;
+    }
+
+    textarea[readonly] {
+      padding: 8px 10px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 90px;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
     }
 
     input.invalid {
@@ -268,6 +281,11 @@
         <select id="antennaSelect"></select>
       </div>
 
+      <label for="antennaInfo">Antenne information</label>
+      <div class="fieldBlock">
+        <textarea id="antennaInfo" readonly></textarea>
+      </div>
+
       <label for="azimuthInput">Déport Azimut (°)</label>
       <div class="fieldBlock">
         <div class="angleEditor">
@@ -305,6 +323,6 @@
     <div id="status" class="status"></div>
   </div>
 
-  <script src="js/app.js?v=2001"></script>
+  <script src="js/app.js?v=2002"></script>
 </body>
 </html>
