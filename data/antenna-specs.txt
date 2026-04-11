@@ -27,8 +27,8 @@ Longueur du radôme : 1.499 m
 Antenne à faisceau fixe.
 Antennes SFR - DIM du 6 septembre 2024. Référence de l'antenne : pages 19 et 20. 
 Adresse : 213 rue de Belleville à Paris, 75019. Environnement : Agglomération dense.
-Angle d'ouverture complet à 3 dB en azimut    : Bande BF 7.6°, Bande MF_HF 7.7°.
-Angle d'ouverture complet à 3 dB en élévation : Bande BF 72°, Bande MF_HF 66°.
+Angle d'ouverture complet à 3 dB en azimut : Bande BF 72°, Bande MF_HF 66°.
+Angle d'ouverture complet à 3 dB en élévation    : Bande BF 7.6°, Bande MF_HF 7.7°.
 Longueur du radôme : 2.695 m
 
 [ANTENNA] Huawei_AOC4518R27V06
@@ -55,7 +55,7 @@ Antennes SFR - DIM du 28 juillet 2025. Référence de l'antenne pages 12 et 14.
 Adresse : 12 rue Raphael Ponson à Marseille.
 Angle d'ouverture complet à 3 dB en azimut : 90°, à 4 dB : 100°, à 7 dB : 136°
 Balayage vertical limité à + ou - 7° de part est d'autre de l'axe de référence (boresight).
-Pré-tilt éléctrique de 6°.
+Pré-tilt électrique de 6°.
 Hauteur du radôme (cas sans intégration): 1,001 m, largeur : 0,448 m, épaisseur : 0,113 m
 
 [ANTENNA] Ericsson_5G_AIR_6449
