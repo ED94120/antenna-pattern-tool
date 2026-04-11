@@ -62,5 +62,5 @@ Hauteur du radôme (cas sans intégration): 1,001 m, largeur : 0,448 m, épaisse
 Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
 Modèle Utilisé par Bouygues Telecom et Orange.
 Angle d'ouverture complet à 3 dB en azimut : 100°
-Angle d'ouverture complet à 3 dB en élévation :23°
+Angle d'ouverture complet à 3 dB en élévation : 23°
 
