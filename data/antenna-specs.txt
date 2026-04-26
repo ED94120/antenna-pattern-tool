@@ -136,18 +136,31 @@ Angle 3dB elevation : Bande BF 9.71°, Bande MF_HF 6.27°.
 Longueur radome : 2.009 m
 
 
+[ANTENNA] Amphenol_RVVPX303.6F12R2
+Type : Antenne à faisceau fixe.
+Source : Antennes FREE - DIM du 29 mars 2023. Référence de l'antenne : page 17.
+Adresse : 55 rue Chalais, L'Haÿ-les-Roses.
+Environnement : pavillonnaire.
+Antenne installée dans le clocher d'une chapelle. 
+Angle 3dB azimut : Bande BF 66.3°, Bande MF 62.5°, Bande HF 61.5°.
+Angle 3dB elevation : Bande BF 28.6°, Bande MF 12.9°, Bande HF 9.6°.
+Longueur radome : 0.919 m
+Largeur radome : 0.353 m
+Epaisseur radome : 0.209 m
+
+
 [ANTENNA] Nokia_5G_AIRSCALE_AQQE
 Type : Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
-Operateurs : SFR, Free.
+Opérateurs : SFR, FREE.
 Note : intégration possible dans un panneau AIO, où le haut du panneau est l'antenne 5G 3500 MHz.
 Source : Antennes SFR - DIM du 28 juillet 2025. Référence de l'antenne : pages 12 et 14.
 Adresse : 12 rue Raphael Ponson, Marseille.
 Angle 3dB azimut : Bande 3500MHz 90°.
-Angle 3dB elevation : Bande 3500MHz non renseigne.
+Angle 3dB elevation : Bande 3500MHz 14°.
 Angle 4dB azimut : Bande 3500MHz 100°.
 Angle 7dB azimut : Bande 3500MHz 136°.
 Balayage vertical : +/- 7° par rapport à l'axe de référence, ou boresight.
-Pre-tilt electrique : 6°.
+Pré-tilt électrique : 6°.
 Longueur radome : 1.001 m
 Largeur radome : 0.448 m
 Epaisseur radome : 0.113 m
@@ -158,4 +171,6 @@ Type : Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
 Operateurs : Bouygues Telecom, Orange.
 Angle 3dB azimut : Bande 3500MHz 100°.
 Angle 3dB elevation : Bande 3500MHz 23°.
-Longueur radome : non renseignee
+Longueur radome : 0.778 m
+Largeur radome : 0.403 m
+Epaisseur radome : 0.228 m
