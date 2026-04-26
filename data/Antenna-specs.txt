@@ -1,0 +1,161 @@
+# ============================================================
+# Fichier : antenna-specs.txt
+# Objet   : informations descriptives et caractéristiques
+#           synthétiques des antennes.
+#
+# RÈGLES DE STRUCTURE POUR LE PARSEUR
+# ============================================================
+#
+# 1. Chaque fiche antenne commence obligatoirement par :
+#
+#    [ANTENNA] Nom_Antenne
+#
+#    Le nom doit être unique.
+#    Si un fichier d'atténuation existe pour cette antenne, ce nom doit être
+#    strictement identique à la première ligne du fichier d'atténuation.
+#
+# 2. Les lignes commençant par # sont des commentaires.
+#    Elles doivent être ignorées par le parseur.
+#
+# 3. Les lignes descriptives libres sont autorisées.
+#    Elles peuvent être affichées telles quelles à l'utilisateur.
+#
+# 4. Les angles d'ouverture doivent être écrits avec les clés suivantes :
+#
+#    Angle 3dB azimut :
+#    Angle 3dB elevation :
+#
+#    La forme recommandée est :
+#
+#    Angle 3dB azimut : Bande BF 72°, Bande MF_HF 66°.
+#    Angle 3dB elevation : Bande BF 7.6°, Bande MF_HF 7.7°.
+#
+# 5. Le mot "Bande" doit précéder le nom de bande.
+#    Le nom de bande ne doit pas contenir d'espace.
+#
+#    Exemples valides :
+#    Bande BF 72°
+#    Bande MF 69.4°
+#    Bande HF 59°
+#    Bande MF_HF 67.8°
+#    Bande 3500MHz 100°
+#    Bande General 100°
+#
+# 6. Pour une antenne sans découpage par bandes, utiliser :
+#
+#    Bande General
+#
+#    Exemple :
+#    Angle 3dB azimut : Bande General 100°.
+#    Angle 3dB elevation : Bande General 23°.
+#
+# 7. Les valeurs numériques peuvent utiliser le point décimal.
+#    Exemple : 68.7°
+#
+#    L'utilisation de la virgule décimale est tolérée si le parseur la convertit.
+#    Exemple : 68,7°
+#
+# 8. La longueur du radôme doit être écrite avec la clé suivante :
+#
+#    Longueur radome :
+#
+#    Exemple :
+#    Longueur radome : 2.695 m
+#
+#    Si elle n'est pas connue :
+#    Longueur radome : non renseignee
+#
+# 9. Pour faciliter le parsing, éviter les accents dans les clés structurées.
+#    Les accents restent autorisés dans les textes descriptifs libres.
+#
+# 10. Les unités recommandées sont :
+#
+#    angles : degrés, symbole °
+#    longueur : m
+#
+# ============================================================
+
+
+[ANTENNA] Huawei_A104518R1V07
+Type : Antenne à faisceau fixe.
+Source : Antennes SFR - DIM du 12 juin 2024. Référence de l'antenne : page 14.
+Note : l'antenne utilisée dans le DIM est la version V06.
+Adresse : rue de la Gare 8, Hombourg 68490.
+Environnement : zone industrielle.
+Angle 3dB azimut : Bande BF 64°, Bande MF_HF 68.7°.
+Angle 3dB elevation : Bande BF 13.9°, Bande MF_HF 7.8°.
+Longueur radome : 2.695 m
+
+
+[ANTENNA] Huawei_AQU4519R1V06
+Type : Antenne à faisceau fixe.
+Source : Antennes SFR - DIM du 25 mars 2025. Référence de l'antenne : page 14.
+Adresse : Asté, 65200.
+Environnement : zone rurale montagneuse.
+Angle 3dB azimut : Bande BF 67°, Bande MF_HF 69°.
+Angle 3dB elevation : Bande BF 9.57°, Bande MF_HF 6.6°.
+Longueur radome : 2.550 m
+
+
+[ANTENNA] Huawei_ASI4518R14V06
+Type : Antenne à faisceau fixe.
+Source : Antenne Orange - Information du DIM, 88 Boulevard de Dunkerque, îlot M1, Marseille.
+Source complémentaire : caractéristiques données dans le catalogue Huawei 2017.
+Angle 3dB azimut : Bande BF 62°, Bande MF 62.8°, Bande HF 69.8°.
+Angle 3dB elevation : Bande BF 14.5°, Bande MF 7.5°, Bande HF 6°.
+Longueur radome : 1.499 m
+
+
+[ANTENNA] Huawei_AOC4518R30V06
+Type : Antenne à faisceau fixe.
+Source : Antennes SFR - DIM du 6 septembre 2024. Référence de l'antenne : pages 19 et 20.
+Adresse : 213 rue de Belleville, Paris 75019.
+Environnement : agglomération dense.
+Angle 3dB azimut : Bande BF 72°, Bande MF_HF 66°.
+Angle 3dB elevation : Bande BF 7.6°, Bande MF_HF 7.7°.
+Longueur radome : 2.695 m
+
+
+[ANTENNA] Huawei_AOC4518R27V06
+Type : Antenne à faisceau fixe.
+Source : Antennes SFR - DIM du 10 juillet 2025. Référence de l'antenne : pages 13 et 15.
+Adresse : 15 rue Bethisy, Noisy-le-Sec.
+Environnement : agglomération dense.
+Angle 3dB azimut : Bande BF 70.8°, Bande MF 69.4°, Bande HF 59°.
+Angle 3dB elevation : Bande BF 11.5°, Bande MF 6.5°, Bande HF 5.9°.
+Longueur radome : 2.009 m
+
+
+[ANTENNA] Huawei_A06240PA01V06
+Type : Antenne à faisceau fixe.
+Source : Antennes Orange - DIM du 11 décembre 2025. Référence de l'antenne : pages 8 et 9.
+Adresse : 21 avenue des frênes, Montevrain 77144.
+Environnement : parc en agglomération.
+Angle 3dB azimut : Bande BF 69.6°, Bande MF_HF 67.8°.
+Angle 3dB elevation : Bande BF 9.71°, Bande MF_HF 6.27°.
+Longueur radome : 2.009 m
+
+
+[ANTENNA] Nokia_5G_AIRSCALE_AQQE
+Type : Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
+Operateurs : SFR, Free.
+Note : intégration possible dans un panneau AIO, où le haut du panneau est l'antenne 5G 3500 MHz.
+Source : Antennes SFR - DIM du 28 juillet 2025. Référence de l'antenne : pages 12 et 14.
+Adresse : 12 rue Raphael Ponson, Marseille.
+Angle 3dB azimut : Bande 3500MHz 90°.
+Angle 3dB elevation : Bande 3500MHz non renseigne.
+Angle 4dB azimut : Bande 3500MHz 100°.
+Angle 7dB azimut : Bande 3500MHz 136°.
+Balayage vertical : +/- 7° par rapport à l'axe de référence, ou boresight.
+Pre-tilt electrique : 6°.
+Longueur radome : 1.001 m
+Largeur radome : 0.448 m
+Epaisseur radome : 0.113 m
+
+
+[ANTENNA] Ericsson_5G_AIR_6449
+Type : Antenne 5G 3500 MHz MIMO massive à faisceau orientable.
+Operateurs : Bouygues Telecom, Orange.
+Angle 3dB azimut : Bande 3500MHz 100°.
+Angle 3dB elevation : Bande 3500MHz 23°.
+Longueur radome : non renseignee
