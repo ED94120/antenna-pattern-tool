@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Antenna Pattern Tool</title>
+
   <style>
+    :root {
+      --input-border: #c62828;      /* rouge : cellules recevant de l'information */
+      --result-border: #0b2f6b;     /* bleu foncé : cellules de résultats */
+      --result-muted-border: #8aa0c8;
+      --panel-border: #ddd;
+      --card-border: #e0e0e0;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 28px;
@@ -17,7 +26,7 @@
 
     .panel {
       max-width: 980px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--panel-border);
       border-radius: 12px;
       padding: 16px;
       background: #fff;
@@ -39,24 +48,32 @@
     label[for="azimuthInput"] {
       color: #006400;
     }
-    
+
     label[for^="el_"] {
       color: #8b4513;
     }
-    
+
     select,
     input[type="text"] {
       padding: 8px 10px;
-      border: 1px solid #bbb;
+      border: 2px solid var(--input-border);
       border-radius: 8px;
       font-size: 14px;
       width: 100%;
       box-sizing: border-box;
+      background: #fff;
+    }
+
+    select:focus,
+    input[type="text"]:focus,
+    textarea[readonly]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.18);
     }
 
     textarea[readonly] {
       padding: 8px 10px;
-      border: 1px solid #bbb;
+      border: 2px solid var(--input-border);
       border-radius: 8px;
       font-size: 14px;
       width: 100%;
@@ -70,11 +87,13 @@
     input.invalid {
       border-color: #d93025;
       background: #fff2f2;
+      box-shadow: 0 0 0 2px rgba(217, 48, 37, 0.18);
     }
 
     input.partial-invalid {
       border-color: #e09a00;
       background: #fff9eb;
+      box-shadow: 0 0 0 2px rgba(224, 154, 0, 0.18);
     }
 
     .fieldBlock {
@@ -146,9 +165,9 @@
     }
 
     .copyBtnSum {
-      color: #FF00FF;
+      color: #ff00ff;
     }
-    
+
     .actions button.primary {
       border-color: #333;
       font-weight: 600;
@@ -159,36 +178,36 @@
       grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
       gap: 12px;
     }
-    
+
     .cardGrid {
       display: grid;
       grid-template-columns: 185px 1fr;
       gap: 8px 10px;
       align-items: start;
     }
-    
+
     .cardGrid label {
       white-space: nowrap;
     }
-    
+
     .resultBlock {
       display: grid;
       gap: 8px;
     }
-    
+
     .resultRow {
       display: grid;
-      grid-template-columns: 190px 100px 90px;
+      grid-template-columns: 190px 120px 90px;
       align-items: center;
       column-gap: 10px;
     }
-    
+
     .resultLabel {
       white-space: nowrap;
     }
 
     .card {
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 12px;
       background: #fff;
@@ -208,14 +227,24 @@
 
     .result {
       font-weight: 700;
-      color: #0b57d0;
-      min-width: 92px;
-      display: inline-block;
+      color: var(--result-border);
+      min-width: 120px;
+      min-height: 34px;
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-sizing: border-box;
+      border: 2px solid var(--result-border);
+      border-radius: 8px;
+      background: #f8fbff;
     }
 
     .result.muted {
       color: #999;
       font-weight: 400;
+      background: #fff;
+      border-color: var(--result-muted-border);
     }
 
     .mono {
@@ -262,6 +291,24 @@
         justify-self: start;
         padding-top: 0;
       }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .resultRow {
+        grid-template-columns: 1fr;
+        row-gap: 6px;
+      }
+
+      .result {
+        justify-content: flex-start;
+        width: 100%;
+      }
+
+      .copyBtn {
+        width: fit-content;
+      }
     }
   </style>
 </head>
@@ -305,6 +352,7 @@
             <span class="sliderValue" id="azSliderValue">0°</span>
           </div>
         </div>
+
         <div class="smallHint">Le slider agit sur l’azimut modulo 360.</div>
       </div>
     </div>
@@ -312,17 +360,18 @@
     <div class="actions">
       <button class="primary" id="btnCalc">Calculer</button>
       <button id="btnClearAngles">Effacer angles</button>
-      <button id="btnClearAll">Effacer all</button>
+      <button id="btnClearAll">Effacer tout</button>
     </div>
 
     <div class="mono" id="azEcho"></div>
 
     <h2 style="margin:16px 0 10px; font-size:16px;">Bandes (automatiques)</h2>
+
     <div class="cards" id="bandCards"></div>
 
     <div id="status" class="status"></div>
   </div>
 
-  <script src="js/app.js?v=2002"></script>
+  <script src="js/app.js?v=2003"></script>
 </body>
 </html>
