@@ -12,8 +12,8 @@ const antennaFiles = [
 const antennaSpecsFile = "data/antenna-specs.txt";
 const defaultAntennaInfo = "Pas d'information disponible pour ce modèle d'antenne";
 
-let antennas = {}; // { name: { bands: { bandLabel: { az:[], el:[] } } } }
-let antennaInfos = {}; // { antennaName: "texte libre..." }
+let antennas = {};      // { name: { bands: { bandLabel: { az:[], el:[] } } } }
+let antennaInfos = {};  // { antennaName: "texte libre..." }
 
 window.onload = init;
 
@@ -23,10 +23,12 @@ async function init() {
 
     for (const file of antennaFiles) {
       const r = await fetch(file);
+
       if (!r.ok) {
         setStatus(`ERREUR fetch: ${file} (${r.status})`, true);
         return;
       }
+
       const text = await r.text();
       parseAntenna(text);
     }
@@ -62,7 +64,9 @@ function bindUI() {
 
   azSlider.addEventListener("input", () => {
     const v = Number(azSlider.value);
+
     document.getElementById("azimuthInput").value = formatAngleForInput(v);
+
     updateAzSliderLabel(v);
     refreshAllResults();
   });
@@ -74,6 +78,7 @@ function bindUI() {
 
 function setStatus(msg, isErr = false) {
   const el = document.getElementById("status");
+
   el.textContent = msg || "";
   el.className = isErr ? "status error" : "status";
 }
@@ -114,8 +119,10 @@ function parseAntennaSpecs(text) {
 
     if (line.startsWith("[ANTENNA]")) {
       saveCurrentBlock();
+
       currentName = line.substring("[ANTENNA]".length).trim();
       currentBlock = [];
+
       continue;
     }
 
@@ -163,28 +170,36 @@ function parseAntenna(text) {
     if (!/^Azimut$/i.test(lines[i] || "")) {
       throw new Error(`Format invalide (${antennaName}): 'Azimut' attendu après '${bandLabel}'`);
     }
+
     i++;
 
     const az = [];
+
     for (let k = 0; k < 360; k++) {
       const v = parseFloat((lines[i++] || "").replace(",", "."));
+
       if (!Number.isFinite(v)) {
         throw new Error(`Valeur Azimut invalide (${antennaName} / ${bandLabel}, index ${k})`);
       }
+
       az.push(toAttenuation(v));
     }
 
     if (!/^Elevation$/i.test(lines[i] || "")) {
       throw new Error(`Format invalide (${antennaName} / ${bandLabel}): 'Elevation' attendu`);
     }
+
     i++;
 
     const el = [];
+
     for (let k = 0; k < 360; k++) {
       const v = parseFloat((lines[i++] || "").replace(",", "."));
+
       if (!Number.isFinite(v)) {
         throw new Error(`Valeur Elevation invalide (${antennaName} / ${bandLabel}, index ${k})`);
       }
+
       el.push(toAttenuation(v));
     }
 
@@ -198,12 +213,15 @@ function toAttenuation(v) {
 
 function populateAntennaList() {
   const select = document.getElementById("antennaSelect");
+
   select.innerHTML = "";
 
   for (const name of Object.keys(antennas)) {
     const opt = document.createElement("option");
+
     opt.value = name;
     opt.textContent = name;
+
     select.appendChild(opt);
   }
 
@@ -219,6 +237,7 @@ function onAntennaChanged() {
 
 function renderBandCards() {
   const cards = document.getElementById("bandCards");
+
   cards.innerHTML = "";
 
   const ant = document.getElementById("antennaSelect").value;
@@ -226,6 +245,7 @@ function renderBandCards() {
 
   Object.keys(bands).forEach((bandLabel, idx) => {
     const card = document.createElement("div");
+
     card.className = "card";
     card.dataset.band = bandLabel;
 
@@ -234,6 +254,7 @@ function renderBandCards() {
 
       <div class="cardGrid">
         <label for="el_${idx}">Déport élévation (°)</label>
+
         <div class="fieldBlock">
           <div class="angleEditor">
             <input id="el_${idx}" type="text" inputmode="decimal" placeholder="ex: 0, 5, -10" />
@@ -254,19 +275,19 @@ function renderBandCards() {
         <div class="resultRow">
           <span class="resultLabel">Atténuation Azimut :</span>
           <span class="result muted" id="azRes_${idx}">—</span>
-          <button class="copyBtn" type="button" onclick="copyText('azRes_${idx}')">Copier</button>
+          <button class="copyBtn" type="button" data-copy-target="azRes_${idx}">Copier</button>
         </div>
 
         <div class="resultRow">
           <span class="resultLabel">Atténuation Élévation :</span>
           <span class="result muted" id="elRes_${idx}">—</span>
-          <button class="copyBtn" type="button" onclick="copyText('elRes_${idx}')">Copier</button>
+          <button class="copyBtn" type="button" data-copy-target="elRes_${idx}">Copier</button>
         </div>
 
         <div class="resultRow">
           <span class="resultLabel">Somme atténuation :</span>
           <span class="result muted" id="sumRes_${idx}">—</span>
-          <button class="copyBtn copyBtnSum" type="button" onclick="copyText('sumRes_${idx}')">Copier</button>
+          <button class="copyBtn copyBtnSum" type="button" data-copy-target="sumRes_${idx}">Copier</button>
         </div>
 
         <div class="mono" id="echo_${idx}" style="margin-top:8px;"></div>
@@ -286,12 +307,24 @@ function renderBandCards() {
     btn.addEventListener("click", onStepButtonClick);
   });
 
+  cards.querySelectorAll(".copyBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      copyText(btn.dataset.copyTarget);
+    });
+  });
+
   setStatus(`Bandes détectées : ${Object.keys(bands).length}`);
 }
 
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => (
-    { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]
+    {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;"
+    }[c]
   ));
 }
 
@@ -299,32 +332,73 @@ function parseAngle(str) {
   const raw = (str ?? "").trim();
   const s = raw.replace(",", ".");
 
-  if (!raw) return { state: "empty", ok: false, val: NaN };
+  if (!raw) {
+    return {
+      state: "empty",
+      ok: false,
+      val: NaN
+    };
+  }
+
   if (s === "-" || s === "+" || s === "." || s === "-." || s === "+.") {
-    return { state: "partial", ok: false, val: NaN };
+    return {
+      state: "partial",
+      ok: false,
+      val: NaN
+    };
   }
 
   const v = Number(s);
-  if (!Number.isFinite(v)) return { state: "invalid", ok: false, val: NaN };
 
-  return { state: "ok", ok: true, val: v };
+  if (!Number.isFinite(v)) {
+    return {
+      state: "invalid",
+      ok: false,
+      val: NaN
+    };
+  }
+
+  return {
+    state: "ok",
+    ok: true,
+    val: v
+  };
 }
 
 function normAzimuth(a) {
   let x = a % 360;
+
   if (x < 0) x += 360;
+
   return x;
 }
 
 function elevationToIndexFloat(eDeg) {
-  if (eDeg >= 0 && eDeg <= 180) return { ok: true, idx: eDeg };
-  if (eDeg < 0 && eDeg >= -180) return { ok: true, idx: eDeg + 360 };
-  return { ok: false, idx: NaN };
+  if (eDeg >= 0 && eDeg <= 180) {
+    return {
+      ok: true,
+      idx: eDeg
+    };
+  }
+
+  if (eDeg < 0 && eDeg >= -180) {
+    return {
+      ok: true,
+      idx: eDeg + 360
+    };
+  }
+
+  return {
+    ok: false,
+    idx: NaN
+  };
 }
 
 function interpCircular360(arr, idxFloat) {
   const n = 360;
+
   let x = idxFloat % n;
+
   if (x < 0) x += n;
 
   const i0 = Math.floor(x);
@@ -336,6 +410,7 @@ function interpCircular360(arr, idxFloat) {
 
 function refreshAllResults() {
   const ant = document.getElementById("antennaSelect").value;
+
   if (!ant || !antennas[ant]) {
     setStatus("Aucune antenne disponible.", true);
     return;
@@ -345,6 +420,7 @@ function refreshAllResults() {
   const bandLabels = Object.keys(bands);
 
   const azInfo = getAzimuthInfo();
+
   renderAzimuthEcho(azInfo);
 
   let fullCount = 0;
@@ -354,9 +430,13 @@ function refreshAllResults() {
   bandLabels.forEach((bandLabel, idx) => {
     const res = updateBandCard(idx, bandLabel, bands[bandLabel], azInfo);
 
-    if (res.full) fullCount++;
-    else if (res.partial) partialCount++;
-    else if (res.invalid) invalidCount++;
+    if (res.full) {
+      fullCount++;
+    } else if (res.partial) {
+      partialCount++;
+    } else if (res.invalid) {
+      invalidCount++;
+    }
   });
 
   if (fullCount === 0 && partialCount === 0) {
@@ -365,13 +445,23 @@ function refreshAllResults() {
     } else {
       setStatus("Aucune valeur exploitable pour le moment.", true);
     }
+
     return;
   }
 
   let msg = "";
-  if (fullCount > 0) msg += `${fullCount} bande(s) calculée(s) complètement`;
-  if (partialCount > 0) msg += `${msg ? ", " : ""}${partialCount} partiellement`;
-  if (invalidCount > 0) msg += `${msg ? ", " : ""}${invalidCount} avec saisie invalide`;
+
+  if (fullCount > 0) {
+    msg += `${fullCount} bande(s) calculée(s) complètement`;
+  }
+
+  if (partialCount > 0) {
+    msg += `${msg ? ", " : ""}${partialCount} partiellement`;
+  }
+
+  if (invalidCount > 0) {
+    msg += `${msg ? ", " : ""}${invalidCount} avec saisie invalide`;
+  }
 
   setStatus(`Calcul mis à jour : ${msg}.`);
 }
@@ -380,7 +470,11 @@ function getAzimuthInfo() {
   const azInput = document.getElementById("azimuthInput");
   const parsed = parseAngle(azInput.value);
 
-  setInputState(azInput, parsed.state === "invalid", parsed.state === "partial");
+  setInputState(
+    azInput,
+    parsed.state === "invalid",
+    parsed.state === "partial"
+  );
 
   if (!parsed.ok) {
     return {
@@ -442,19 +536,27 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   echoEl.textContent = "";
 
   const elParsed = parseAngle(elInput.value);
-  setInputState(elInput, elParsed.state === "invalid", elParsed.state === "partial");
+
+  setInputState(
+    elInput,
+    elParsed.state === "invalid",
+    elParsed.state === "partial"
+  );
 
   let azDone = false;
   let elDone = false;
   let invalid = false;
   let attAzVal = NaN;
   let attElVal = NaN;
+
   const notes = [];
 
   if (azInfo.ok) {
     attAzVal = interpCircular360(pat.az, azInfo.norm);
+
     azResEl.textContent = `${attAzVal.toFixed(2)} dB`;
     azResEl.classList.remove("muted");
+
     azDone = true;
   } else if (azInfo.state === "invalid") {
     notes.push("Azimut invalide.");
@@ -472,20 +574,25 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
     invalid = true;
   } else {
     const eIdx = elevationToIndexFloat(elParsed.val);
+
     if (!eIdx.ok) {
       notes.push("Élévation hors domaine (valeurs admises : -180° à 180°).");
       invalid = true;
     } else {
       attElVal = interpCircular360(pat.el, eIdx.idx);
+
       elResEl.textContent = `${attElVal.toFixed(2)} dB`;
       elResEl.classList.remove("muted");
+
       notes.push(`Élévation saisie: ${elParsed.val}° ; position table: ${eIdx.idx.toFixed(3)}`);
+
       elDone = true;
     }
   }
 
   if (azDone && elDone) {
     const attSum = attAzVal + attElVal;
+
     sumResEl.textContent = `${attSum.toFixed(2)} dB`;
     sumResEl.classList.remove("muted");
   }
@@ -502,8 +609,11 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
 function setInputState(input, invalid, partialInvalid) {
   input.classList.remove("invalid", "partial-invalid");
 
-  if (invalid) input.classList.add("invalid");
-  else if (partialInvalid) input.classList.add("partial-invalid");
+  if (invalid) {
+    input.classList.add("invalid");
+  } else if (partialInvalid) {
+    input.classList.add("partial-invalid");
+  }
 }
 
 function clearAnglesOnly() {
@@ -511,10 +621,15 @@ function clearAnglesOnly() {
   document.getElementById("azEcho").textContent = "";
 
   const slider = document.getElementById("azimuthSlider");
-  if (slider) slider.value = 0;
+
+  if (slider) {
+    slider.value = 0;
+  }
+
   updateAzSliderLabel(0);
 
   const cards = document.getElementById("bandCards");
+
   cards.querySelectorAll("input[id^='el_']").forEach(inp => {
     inp.value = "";
     inp.classList.remove("invalid", "partial-invalid");
@@ -539,10 +654,13 @@ function clearAngles() {
 
 function clearAll() {
   clearAnglesOnly();
+
   document.getElementById("antennaSelect").selectedIndex = 0;
+
   updateAntennaInfo();
   renderBandCards();
   refreshAllResults();
+
   setStatus("Réinitialisé.");
 }
 
@@ -553,6 +671,7 @@ function syncSliderFromAzimuthInput() {
 
   if (parsed.ok) {
     const norm = normAzimuth(parsed.val);
+
     slider.value = Math.round(norm);
     updateAzSliderLabel(Math.round(norm));
   } else {
@@ -578,6 +697,7 @@ function onStepButtonClick(e) {
 
 function incrementAngleInput(input, step) {
   const parsed = parseAngle(input.value);
+
   let base = 0;
 
   if (parsed.ok) {
@@ -591,8 +711,10 @@ function incrementAngleInput(input, step) {
     input.value = formatAngleForInput(next);
 
     const slider = document.getElementById("azimuthSlider");
+
     slider.value = Math.round(next);
     updateAzSliderLabel(Math.round(next));
+
     return;
   }
 
@@ -606,7 +728,11 @@ function clamp(v, vMin, vMax) {
 
 function formatAngleForInput(v) {
   if (!Number.isFinite(v)) return "";
-  if (Math.abs(v - Math.round(v)) < 1e-9) return String(Math.round(v));
+
+  if (Math.abs(v - Math.round(v)) < 1e-9) {
+    return String(Math.round(v));
+  }
+
   return String(Number(v.toFixed(3)));
 }
 
@@ -616,10 +742,16 @@ function onAngleKeydown(e) {
   e.preventDefault();
 
   const dir = e.key === "ArrowUp" ? 1 : -1;
+
   let step = 1;
 
-  if (e.shiftKey) step = 5;
-  if (e.ctrlKey || e.metaKey) step = 10;
+  if (e.shiftKey) {
+    step = 5;
+  }
+
+  if (e.ctrlKey || e.metaKey) {
+    step = 10;
+  }
 
   incrementAngleInput(e.currentTarget, dir * step);
   refreshAllResults();
@@ -631,15 +763,18 @@ function onAngleWheel(e) {
   e.preventDefault();
 
   const dir = e.deltaY < 0 ? 1 : -1;
+
   incrementAngleInput(e.currentTarget, dir);
   refreshAllResults();
 }
 
 async function copyText(spanId) {
-  const txt = (document.getElementById(spanId).textContent || "").trim();
+  const txt = (document.getElementById(spanId)?.textContent || "").trim();
+
   if (!txt || txt === "—") return;
 
   const numMatch = txt.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+
   if (!numMatch) {
     setStatus("Aucune valeur numérique à copier.", true);
     return;
@@ -652,9 +787,11 @@ async function copyText(spanId) {
     setStatus("Valeur numérique copiée dans le presse-papier.");
   } catch {
     const ta = document.createElement("textarea");
+
     ta.value = valueToCopy;
     ta.style.position = "fixed";
     ta.style.left = "-9999px";
+
     document.body.appendChild(ta);
     ta.select();
 
@@ -668,6 +805,4 @@ async function copyText(spanId) {
     }
   }
 }
-
-window.copyText = copyText;
    
