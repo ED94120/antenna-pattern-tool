@@ -12,8 +12,13 @@ const antennaFiles = [
 const antennaSpecsFile = "data/antenna-specs.txt";
 const defaultAntennaInfo = "Pas d'information disponible pour ce modèle d'antenne";
 
+const ATTENUATION_MESSAGE_TYPE = "ANTENNA_PATTERN_ATTENUATIONS";
+
 let antennas = {};      // { name: { bands: { bandLabel: { az:[], el:[] } } } }
 let antennaInfos = {};  // { antennaName: "texte libre..." }
+
+let latestAttenuationPayload = null;
+let latestAttenuationSignature = "";
 
 window.onload = init;
 
@@ -37,6 +42,7 @@ async function init() {
 
     populateAntennaList();
     bindUI();
+
     setStatus("Prêt.");
     refreshAllResults();
   } catch (e) {
@@ -74,6 +80,14 @@ function bindUI() {
   document.querySelectorAll(".stepBtn").forEach(btn => {
     btn.addEventListener("click", onStepButtonClick);
   });
+
+  const sendBtn = document.getElementById("btnSendAttenuations");
+
+  if (sendBtn) {
+    sendBtn.addEventListener("click", () => {
+      sendLatestAttenuationsToParent(true);
+    });
+  }
 }
 
 function setStatus(msg, isErr = false) {
@@ -150,6 +164,7 @@ function updateAntennaInfo() {
   }
 
   const info = antennaInfos[antennaName];
+
   infoEl.value = (info && info.trim()) ? info.trim() : defaultAntennaInfo;
 }
 
@@ -229,6 +244,9 @@ function populateAntennaList() {
 }
 
 function onAntennaChanged() {
+  latestAttenuationPayload = null;
+  latestAttenuationSignature = "";
+
   clearAnglesOnly();
   updateAntennaInfo();
   renderBandCards();
@@ -427,8 +445,12 @@ function refreshAllResults() {
   let partialCount = 0;
   let invalidCount = 0;
 
+  const bandResults = [];
+
   bandLabels.forEach((bandLabel, idx) => {
     const res = updateBandCard(idx, bandLabel, bands[bandLabel], azInfo);
+
+    bandResults.push(res);
 
     if (res.full) {
       fullCount++;
@@ -438,6 +460,8 @@ function refreshAllResults() {
       invalidCount++;
     }
   });
+
+  updateLatestAttenuationPayload(ant, bandResults, azInfo);
 
   if (fullCount === 0 && partialCount === 0) {
     if (!azInfo.ok && azInfo.state !== "empty" && azInfo.state !== "partial") {
@@ -548,6 +572,7 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   let invalid = false;
   let attAzVal = NaN;
   let attElVal = NaN;
+  let attSum = NaN;
 
   const notes = [];
 
@@ -591,7 +616,7 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   }
 
   if (azDone && elDone) {
-    const attSum = attAzVal + attElVal;
+    attSum = attAzVal + attElVal;
 
     sumResEl.textContent = `${attSum.toFixed(2)} dB`;
     sumResEl.classList.remove("muted");
@@ -600,9 +625,14 @@ function updateBandCard(idx, bandLabel, pat, azInfo) {
   echoEl.textContent = notes.join(" ");
 
   return {
+    bandLabel,
+    frequencyRangeMHz: extractFrequencyRangeMHz(bandLabel),
     full: azDone && elDone,
     partial: (azDone || elDone) && !(azDone && elDone),
-    invalid
+    invalid,
+    azimuthAttenuation: azDone ? attAzVal : null,
+    elevationAttenuation: elDone ? attElVal : null,
+    totalAttenuation: (azDone && elDone) ? attSum : null
   };
 }
 
@@ -619,6 +649,9 @@ function setInputState(input, invalid, partialInvalid) {
 function clearAnglesOnly() {
   document.getElementById("azimuthInput").value = "";
   document.getElementById("azEcho").textContent = "";
+
+  latestAttenuationPayload = null;
+  latestAttenuationSignature = "";
 
   const slider = document.getElementById("azimuthSlider");
 
@@ -805,4 +838,260 @@ async function copyText(spanId) {
     }
   }
 }
+
+/* -------------------------------------------------------------------------
+   Transmission des atténuations vers la page parente
+   -------------------------------------------------------------------------
+
+   Principe :
+   - ne jamais envoyer de champ vide ;
+   - envoyer uniquement les valeurs réellement calculées ;
+   - la page parente doit fusionner les nouvelles valeurs avec les anciennes.
+
+   Champs possibles :
+   - fixedBand1Attenuation : atténuation bande FF n°1
+   - fixedBand2Attenuation : atténuation bande FF n°2
+   - fixedBand3Attenuation : atténuation bande FF n°3
+   - g3500Attenuation      : atténuation 5G 3500 MHz
+------------------------------------------------------------------------- */
+
+function updateLatestAttenuationPayload(antennaName, bandResults, azInfo) {
+  const payload = buildAttenuationPayload(antennaName, bandResults, azInfo);
+
+  latestAttenuationPayload = payload;
+
+  if (payloadHasAnyAttenuation(payload)) {
+    sendLatestAttenuationsToParent(false);
+  }
+}
+
+function buildAttenuationPayload(antennaName, bandResults, azInfo) {
+  const calculatedResults = bandResults
+    .filter(res => res.full)
+    .filter(res => Number.isFinite(res.totalAttenuation));
+
+  if (calculatedResults.length === 0) {
+    return null;
+  }
+
+  const antennaKind = detectAntennaKind(antennaName, bandResults);
+
+  const payload = {
+    antennaType: antennaKind,
+    source: {
+      antennaName,
+      azimuthOffset: azInfo.ok ? Number(azInfo.val.toFixed(3)) : null,
+      azimuthUsedModulo360: azInfo.ok ? Number(azInfo.norm.toFixed(3)) : null,
+      savedAt: new Date().toISOString(),
+      mapping: {}
+    }
+  };
+
+  if (antennaKind === "steerable") {
+    addSteerable3500Attenuation(payload, calculatedResults);
+  } else {
+    addFixedBeamAttenuations(payload, calculatedResults);
+  }
+
+  if (!payloadHasAnyAttenuation(payload)) {
+    return null;
+  }
+
+  return payload;
+}
+
+function detectAntennaKind(antennaName, bandResults) {
+  const ranges = bandResults
+    .map(res => res.frequencyRangeMHz)
+    .filter(Boolean);
+
+  if (ranges.length === 0) {
+    return "fixed";
+  }
+
+  const has3500Band = ranges.some(is3500Range);
+  const hasNon3500Band = ranges.some(range => !is3500Range(range));
+
+  if (has3500Band && !hasNon3500Band) {
+    return "steerable";
+  }
+
+  const normalizedName = String(antennaName || "").toLowerCase();
+
+  if (
+    has3500Band &&
+    (
+      normalizedName.includes("airscale") ||
+      normalizedName.includes("air_") ||
+      normalizedName.includes("5g")
+    )
+  ) {
+    return "steerable";
+  }
+
+  return "fixed";
+}
+
+function addSteerable3500Attenuation(payload, calculatedResults) {
+  const candidates3500 = calculatedResults
+    .filter(res => is3500Range(res.frequencyRangeMHz))
+    .sort(compareBandResultsByCenterFrequency);
+
+  if (candidates3500.length === 0) {
+    return;
+  }
+
+  const selected = candidates3500[0];
+
+  payload.g3500Attenuation = formatAttenuationDb(selected.totalAttenuation);
+  payload.source.mapping.g3500Attenuation = selected.bandLabel;
+}
+
+function addFixedBeamAttenuations(payload, calculatedResults) {
+  const fixedResults = calculatedResults
+    .filter(res => !is3500Range(res.frequencyRangeMHz))
+    .sort(compareBandResultsByCenterFrequency);
+
+  if (fixedResults.length >= 1) {
+    payload.fixedBand1Attenuation = formatAttenuationDb(fixedResults[0].totalAttenuation);
+    payload.source.mapping.fixedBand1Attenuation = fixedResults[0].bandLabel;
+  }
+
+  if (fixedResults.length >= 2) {
+    payload.fixedBand2Attenuation = formatAttenuationDb(fixedResults[1].totalAttenuation);
+    payload.source.mapping.fixedBand2Attenuation = fixedResults[1].bandLabel;
+  }
+
+  if (fixedResults.length >= 3) {
+    payload.fixedBand3Attenuation = formatAttenuationDb(fixedResults[2].totalAttenuation);
+    payload.source.mapping.fixedBand3Attenuation = fixedResults[2].bandLabel;
+  }
+
+  payload.fixedBandCount = Math.min(fixedResults.length, 3);
+}
+
+function payloadHasAnyAttenuation(payload) {
+  if (!payload) return false;
+
+  return (
+    Object.prototype.hasOwnProperty.call(payload, "fixedBand1Attenuation") ||
+    Object.prototype.hasOwnProperty.call(payload, "fixedBand2Attenuation") ||
+    Object.prototype.hasOwnProperty.call(payload, "fixedBand3Attenuation") ||
+    Object.prototype.hasOwnProperty.call(payload, "g3500Attenuation")
+  );
+}
+
+function sendLatestAttenuationsToParent(showStatus) {
+  if (!payloadHasAnyAttenuation(latestAttenuationPayload)) {
+    if (showStatus) {
+      setStatus("Aucune atténuation complète à transmettre.", true);
+    }
+
+    return false;
+  }
+
+  const message = {
+    type: ATTENUATION_MESSAGE_TYPE,
+    payload: latestAttenuationPayload
+  };
+
+  const signature = JSON.stringify(message);
+
+  if (!showStatus && signature === latestAttenuationSignature) {
+    return true;
+  }
+
+  latestAttenuationSignature = signature;
+
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(message, "*");
+    }
+
+    if (showStatus) {
+      setStatus("Atténuations transmises à la page parente.");
+    }
+
+    return true;
+  } catch (error) {
+    if (showStatus) {
+      setStatus(`Transmission impossible : ${error?.message ?? error}`, true);
+    }
+
+    return false;
+  }
+}
+
+function formatAttenuationDb(value) {
+  if (!Number.isFinite(value)) return "";
+
+  return Number(value).toFixed(2);
+}
+
+function extractFrequencyRangeMHz(label) {
+  const text = String(label || "");
+
+  const matches = [...text.matchAll(/(\d+(?:[.,]\d+)?)\s*(GHz|MHz)?/gi)];
+
+  if (matches.length === 0) {
+    return null;
+  }
+
+  const freqs = matches
+    .map(match => {
+      const rawValue = match[1];
+      const rawUnit = match[2] || "MHz";
+
+      let value = Number(rawValue.replace(",", "."));
+
+      if (!Number.isFinite(value)) {
+        return NaN;
+      }
+
+      const unit = rawUnit.toLowerCase();
+
+      if (unit === "ghz") {
+        value *= 1000;
+      }
+
+      return value;
+    })
+    .filter(Number.isFinite);
+
+  if (freqs.length === 0) {
+    return null;
+  }
+
+  const fMin = Math.min(...freqs);
+  const fMax = Math.max(...freqs);
+
+  return {
+    fMin,
+    fMax,
+    fCenter: (fMin + fMax) / 2
+  };
+}
+
+function is3500Range(range) {
+  if (!range) return false;
+
+  return frequencyIsInsideRange(3500, range.fMin, range.fMax);
+}
+
+function frequencyIsInsideRange(freq, fMin, fMax) {
+  return freq >= fMin && freq <= fMax;
+}
+
+function compareBandResultsByCenterFrequency(a, b) {
+  const ca = a.frequencyRangeMHz?.fCenter ?? Number.POSITIVE_INFINITY;
+  const cb = b.frequencyRangeMHz?.fCenter ?? Number.POSITIVE_INFINITY;
+
+  return ca - cb;
+}
+
+window.copyText = copyText;
+window.sendLatestAttenuationsToParent = sendLatestAttenuationsToParent;
+window.getLatestAttenuationPayload = function() {
+  return latestAttenuationPayload;
+};
    
